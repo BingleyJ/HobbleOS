@@ -20,7 +20,7 @@ import com.googlecode.lanterna.screen.Screen;
 			   
 			    //Do GUI logic here
 			    textGUI.showWindow(main, GUIScreen.Position.OVERLAPPING.CENTER);
-			 
+			    textGUI.showWindow(null);
 		   
 
 		    textGUI.getScreen().stopScreen();    	 
