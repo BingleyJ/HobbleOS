@@ -3,8 +3,14 @@ A Simple OS SIM By John Bingley.
 
 Hobble : to walk with difficulty because of injury or weakness.
 
-	I decided to try to use Lanterna, a ncurses type library for Java. For the challange of using something new, with good documentation, but virtually no online samples. There is virtually NOTHING in eamples or tutorials online. 
-	The JavaDoc is complete, and I'm finding it very challanging using solely Documentation to implement a TXT GUI with Lantern. 
+	I decided to try to use Lanterna, a ncurses type library for Java.
+	For the challenge of using something new, with good documentation,
+	but virtually no online samples. There is virtually NOTHING in Samples
+	or tutorials online. The Doc seems complete (minus examples). I'm
+	finding it very challenging using solely Documentation to implement
+	a TXT GUI with Lantern. 
+	
+	https://code.google.com/p/lanterna/
 
 
 
