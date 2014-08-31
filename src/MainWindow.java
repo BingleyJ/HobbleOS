@@ -1,19 +1,29 @@
 
+import java.awt.image.ComponentSampleModel;
+import java.io.Console;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import com.googlecode.lanterna.gui.Action;
 import com.googlecode.lanterna.gui.Border;
+import com.googlecode.lanterna.gui.Component;
 import com.googlecode.lanterna.gui.GUIScreen;
+import com.googlecode.lanterna.gui.Interactable.FocusChangeDirection;
 import com.googlecode.lanterna.gui.Window;
 import com.googlecode.lanterna.gui.component.Button;
+import com.googlecode.lanterna.gui.component.Label;
 import com.googlecode.lanterna.gui.component.Panel;
+import com.googlecode.lanterna.gui.component.TextBox;
 import com.googlecode.lanterna.gui.dialog.DialogButtons;
 import com.googlecode.lanterna.gui.dialog.DialogResult;
 import com.googlecode.lanterna.gui.dialog.MessageBox;
 
 public class MainWindow extends Window {
 	boolean hidemain = false;
+	String textIn = "";
+	TextBox consoleInput = new TextBox();
+
 	
 	DialogButtons d1 = DialogButtons.YES_NO;
 
@@ -26,7 +36,7 @@ public class MainWindow extends Window {
 		main.addComponent(new Button("Current Date", new Action(){
 			@Override
 			public void doAction(){
-				MessageBox.showMessageBox(getOwner(), "Current Date", hlp.date());
+				MessageBox.showMessageBox(getOwner(), "Current Date :", hlp.date());
 			}
 		}));		
 		
@@ -36,6 +46,25 @@ public class MainWindow extends Window {
 			public void doAction(){
 				
 				MessageBox.showMessageBox(getOwner(), getDirectoryPath(), getFileListing());
+			}
+		}));
+		
+		main.addComponent(new Button("Print command text", new Action(){
+			@Override
+			public void doAction(){
+				textIn = consoleInput.getText();
+				MessageBox.showMessageBox(getOwner(), textIn, textIn);
+			}
+		}));
+		
+		main.addComponent(new Button("Console", new Action(){
+			@Override
+			public void doAction(){
+				Panel console = new Panel(new Border.Invisible(), Panel.Orientation.VERTICAL);
+				console.addComponent(new Label(getDirectoryPath()));
+				console.addComponent(consoleInput);
+				setFocus(consoleInput);
+				addComponent(console);
 			}
 		}));
 		
@@ -60,7 +89,7 @@ public class MainWindow extends Window {
 	}
 	
 	private String getFileListing() {
-		// Directory path here
+		// Dir
 		String path = ".";
 
 		String files = null;
