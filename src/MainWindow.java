@@ -1,4 +1,3 @@
-
 import java.awt.image.ComponentSampleModel;
 import java.io.Console;
 import java.io.File;
@@ -23,71 +22,85 @@ public class MainWindow extends Window {
 	boolean hidemain = false;
 	String textIn = "";
 	TextBox consoleInput = new TextBox();
+	boolean openConsole = false;
 
-	
 	DialogButtons d1 = DialogButtons.YES_NO;
 
-	
-	public MainWindow(final GUIScreen gui){
-		 super("Hobble V.00001");
-		 final Panel main = new Panel(new Border.Bevel(true), Panel.Orientation.VERTICAL);
+	public MainWindow(final GUIScreen gui) {
+		super("Hobble V.00001");
+		final Panel main = new Panel(new Border.Bevel(true),
+				Panel.Orientation.VERTICAL);
 		final Helper hlp = new Helper();
-		 
-		main.addComponent(new Button("Current Date", new Action(){
+
+		main.addComponent(new Button("Current Date", new Action() {
 			@Override
-			public void doAction(){
-				MessageBox.showMessageBox(getOwner(), "Current Date :", hlp.date());
-			}
-		}));		
-		
-		
-		main.addComponent(new Button("Directory Listing", new Action(){
-			@Override
-			public void doAction(){
-				
-				MessageBox.showMessageBox(getOwner(), getDirectoryPath(), getFileListing());
+			public void doAction() {
+				MessageBox.showMessageBox(getOwner(), "Current Date :",
+						hlp.date());
 			}
 		}));
-		
-		main.addComponent(new Button("Print command text", new Action(){
+
+		main.addComponent(new Button("Directory Listing", new Action() {
 			@Override
-			public void doAction(){
+			public void doAction() {
+
+				MessageBox.showMessageBox(getOwner(), getDirectoryPath(),
+						getFileListing());
+			}
+		}));
+
+		main.addComponent(new Button("Run Console Command", new Action() {
+			@Override
+			public void doAction() {
 				textIn = consoleInput.getText();
-				MessageBox.showMessageBox(getOwner(), textIn, textIn);
+				switch (textIn) {
+				case "ls":
+					MessageBox.showMessageBox(getOwner(), getDirectoryPath(),
+							getFileListing());
+					break;
+				case "quit":
+					System.exit(0);
+					break;
+
+				}
+				//MessageBox.showMessageBox(getOwner(), textIn, textIn);
 			}
 		}));
-		
-		main.addComponent(new Button("Console", new Action(){
+
+		main.addComponent(new Button("Console", new Action() {
 			@Override
-			public void doAction(){
-				Panel console = new Panel(new Border.Invisible(), Panel.Orientation.VERTICAL);
-				console.addComponent(new Label(getDirectoryPath()));
-				console.addComponent(consoleInput);
-				setFocus(consoleInput);
-				addComponent(console);
+			public void doAction() {
+				if (!openConsole) {
+					Panel console = new Panel(new Border.Invisible(),Panel.Orientation.VERTICAL);
+					console.addComponent(consoleInput);
+					setFocus(consoleInput);
+					main.addComponent(console);
+					openConsole = true;
+				}
 			}
 		}));
-		
-		main.addComponent(new Button("Shutdown Hobble", new Action(){
+
+		main.addComponent(new Button("Shutdown Hobble", new Action() {
 			@Override
-			public void doAction(){
-				//removeAllComponents();
-				DialogResult dr ;
-				dr = MessageBox.showMessageBox(getOwner(), "Quit", "Are you sure?", d1);
+			public void doAction() {
+				// removeAllComponents();
+				DialogResult dr;
+				dr = MessageBox.showMessageBox(getOwner(), "Quit",
+						"Are you sure?", d1);
 				if (dr == DialogResult.YES)
 					System.exit(0);
 			}
 		}));
-	    addComponent(main);
+		addComponent(main);
 
 	}
 
-	private String getDirectoryPath(){
+	private String getDirectoryPath() {
 		Path currentRelativePath = Paths.get("");
 		String s = currentRelativePath.toAbsolutePath().toString();
 		return s;
 	}
-	
+
 	private String getFileListing() {
 		// Dir
 		String path = ".";
