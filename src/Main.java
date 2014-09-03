@@ -4,11 +4,16 @@ import com.googlecode.lanterna.screen.Screen;
 
 
 	public class Main {
+	    static boolean running = true;
+
 	
 		@SuppressWarnings("deprecation")
 		public static void main(String[] args) throws InterruptedException {
 			  GUIScreen textGUI = TerminalFacade.createGUIScreen();
 			    MainWindow main = new MainWindow(textGUI);
+			    main.setSoloWindow(true);
+			    
+			    
 			    if(textGUI == null) {
 			        System.err.println("Couldn't allocate a terminal!");
 			        return;
@@ -18,9 +23,14 @@ import com.googlecode.lanterna.screen.Screen;
 			   
 			    
 			   
-			    //Do GUI logic here
-			    textGUI.showWindow(main, GUIScreen.Position.OVERLAPPING.CENTER);
-			    textGUI.showWindow(null);
+				//GUI Stuff
+			    while (running){
+			  
+			    	textGUI.showWindow(main, GUIScreen.Position.OVERLAPPING.CENTER);
+			    	textGUI.showWindow(null);
+			    	
+			    	
+			    }
 		   
 
 		    textGUI.getScreen().stopScreen();    	 

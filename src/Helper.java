@@ -9,20 +9,19 @@ public class Helper {
 		
 	}
 
-	public String date(){
-		// Create an instance of SimpleDateFormat used for formatting 
-		// the string representation of date (month/day/year)
-		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-
-		// Get the date today using Calendar object.
+	
+	public String getTime(){
+		DateFormat tf = new SimpleDateFormat("hh:mm:ss");
 		java.util.Date today = Calendar.getInstance().getTime();        
-		// Using DateFormat format method we can create a string 
-		// representation of a date with the defined format.
+		String reportTime = tf.format(today);
+		return reportTime;
+	}
+	
+	public String getDate(){
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		java.util.Date today = Calendar.getInstance().getTime();        
 		String reportDate = df.format(today);
-
-		// Print what date is today!
-		String returndate = ("Date: " + reportDate);
-		return returndate;
+		return reportDate;
 	}
 	
 	public void wait(int inMilli) throws InterruptedException{

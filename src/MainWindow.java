@@ -1,8 +1,14 @@
+
 import java.awt.image.ComponentSampleModel;
 import java.io.Console;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.googlecode.lanterna.gui.Action;
 import com.googlecode.lanterna.gui.Border;
@@ -17,9 +23,13 @@ import com.googlecode.lanterna.gui.component.TextBox;
 import com.googlecode.lanterna.gui.dialog.DialogButtons;
 import com.googlecode.lanterna.gui.dialog.DialogResult;
 import com.googlecode.lanterna.gui.dialog.MessageBox;
+import com.googlecode.lanterna.screen.Screen;
 
 public class MainWindow extends Window {
-	boolean hidemain = false;
+	
+    ArrayList<String> history = new ArrayList<String>();
+    int nextHistoryLocation = history.size();
+   
 	String textIn = "";
 	TextBox consoleInput = new TextBox();
 	boolean openConsole = false;
@@ -31,55 +41,26 @@ public class MainWindow extends Window {
 		final Panel main = new Panel(new Border.Bevel(true),
 				Panel.Orientation.VERTICAL);
 		final Helper hlp = new Helper();
-
+		
 		main.addComponent(new Button("Current Date", new Action() {
 			@Override
 			public void doAction() {
 				MessageBox.showMessageBox(getOwner(), "Current Date :",
-						hlp.date());
+						hlp.getDate());
+				history.add(history.size(), " Date Request " + hlp.getDate() + " @ " + hlp.getTime() + "\n");
 			}
 		}));
 
 		main.addComponent(new Button("Directory Listing", new Action() {
 			@Override
 			public void doAction() {
+				history.add(history.size(), " ls Request" + hlp.getDate() + " @ " + hlp.getTime());
 
 				MessageBox.showMessageBox(getOwner(), getDirectoryPath(),
 						getFileListing());
 			}
 		}));
-
-		main.addComponent(new Button("Run Console Command", new Action() {
-			@Override
-			public void doAction() {
-				textIn = consoleInput.getText();
-				switch (textIn) {
-				case "ls":
-					MessageBox.showMessageBox(getOwner(), getDirectoryPath(),
-							getFileListing());
-					break;
-				case "quit":
-					System.exit(0);
-					break;
-
-				}
-				//MessageBox.showMessageBox(getOwner(), textIn, textIn);
-			}
-		}));
-
-		main.addComponent(new Button("Console", new Action() {
-			@Override
-			public void doAction() {
-				if (!openConsole) {
-					Panel console = new Panel(new Border.Invisible(),Panel.Orientation.VERTICAL);
-					console.addComponent(consoleInput);
-					setFocus(consoleInput);
-					main.addComponent(console);
-					openConsole = true;
-				}
-			}
-		}));
-
+		
 		main.addComponent(new Button("Shutdown Hobble", new Action() {
 			@Override
 			public void doAction() {
@@ -87,12 +68,73 @@ public class MainWindow extends Window {
 				DialogResult dr;
 				dr = MessageBox.showMessageBox(getOwner(), "Quit",
 						"Are you sure?", d1);
-				if (dr == DialogResult.YES)
+				if (dr == DialogResult.YES){
+					try {
+						smoothLanding();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					System.exit(0);
+				}
+			}
+		}));
+		
+		Panel console = new Panel(new Border.Invisible(),Panel.Orientation.HORISONTAL);
+		if (!openConsole) {
+			console.addComponent(consoleInput);
+			setFocus(consoleInput);
+			main.addComponent(console);
+			openConsole = true;
+		}
+		else {
+			gui.getActiveWindow().removeComponent(consoleInput);
+		}
+		
+
+		main.addComponent(new Button("Run Console Command", new Action() {
+			@Override
+			public void doAction() {
+				textIn = consoleInput.getText();
+				switch (textIn) {
+				case "ls":
+					history.add(history.size(), " ls Request" + hlp.getDate() + " @ " + hlp.getTime());
+					MessageBox.showMessageBox(getOwner(), getDirectoryPath(),
+							getFileListing());
+					break;
+				case "quit":
+					history.add(history.size(), " quit Request" + hlp.getDate() + " @ " + hlp.getTime());
+					try {
+						smoothLanding();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					System.exit(0);
+				case "help":
+					MessageBox.showMessageBox(getOwner(),"Help Menu", "ls : List Current Directory\nquit : Shutdown Hobble\nhelp : We cannot provide the type you need.");
+
+					break;
+				default : 
+					MessageBox.showMessageBox(getOwner(),"Error", "Unkown Command\nYour computer has a virus.\nLike for sure.");
+					break;
+
+				}
+				//MessageBox.showMessageBox(getOwner(), textIn, textIn);
 			}
 		}));
 		addComponent(main);
+	}
 
+	
+	//write history to file
+	protected void smoothLanding() throws IOException {
+		// TODO Auto-generated method stub
+		FileWriter write = new FileWriter("Histo.ry");
+		for(String str: history) {
+			write.write(str);
+		}
+		write.close();
 	}
 
 	private String getDirectoryPath() {
