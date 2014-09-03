@@ -50,6 +50,15 @@ public class MainWindow extends Window {
 				history.add(history.size(), " Date Request " + hlp.getDate() + " @ " + hlp.getTime() + "\n");
 			}
 		}));
+		
+		main.addComponent(new Button("Current Time", new Action() {
+			@Override
+			public void doAction() {
+				MessageBox.showMessageBox(getOwner(), "Current time :",
+						hlp.getTime());
+				history.add(history.size(), " Time Request " + hlp.getDate() + " @ " + hlp.getTime() + "\n");
+			}
+		}));
 
 		main.addComponent(new Button("Directory Listing", new Action() {
 			@Override
