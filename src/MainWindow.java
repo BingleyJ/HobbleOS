@@ -1,5 +1,6 @@
 
 import java.awt.image.ComponentSampleModel;
+import java.io.BufferedWriter;
 import java.io.Console;
 import java.io.File;
 import java.io.FileWriter;
@@ -29,6 +30,8 @@ public class MainWindow extends Window {
 	
     ArrayList<String> history = new ArrayList<String>();
     int nextHistoryLocation = history.size();
+    
+    final Helper hlp = new Helper();
    
 	String textIn = "";
 	TextBox consoleInput = new TextBox();
@@ -40,7 +43,7 @@ public class MainWindow extends Window {
 		super("Hobble V.00001");
 		final Panel main = new Panel(new Border.Bevel(true),
 				Panel.Orientation.VERTICAL);
-		final Helper hlp = new Helper();
+		
 		
 		main.addComponent(new Button("Current Date", new Action() {
 			@Override
@@ -63,7 +66,7 @@ public class MainWindow extends Window {
 		main.addComponent(new Button("Directory Listing", new Action() {
 			@Override
 			public void doAction() {
-				history.add(history.size(), " ls Request" + hlp.getDate() + " @ " + hlp.getTime());
+				history.add(history.size(), " ls Request" + hlp.getDate() + " @ " + hlp.getTime()+ "\n");
 
 				MessageBox.showMessageBox(getOwner(), getDirectoryPath(),
 						getFileListing());
@@ -109,10 +112,10 @@ public class MainWindow extends Window {
 				case "ls":
 					history.add(history.size(), " ls Request" + hlp.getDate() + " @ " + hlp.getTime());
 					MessageBox.showMessageBox(getOwner(), getDirectoryPath(),
-							getFileListing());
+							getFileListing() + "\n");
 					break;
 				case "quit":
-					history.add(history.size(), " quit Request" + hlp.getDate() + " @ " + hlp.getTime());
+					history.add(history.size(), " quit Request" + hlp.getDate() + " @ " + hlp.getTime()+ "\n");
 					try {
 						smoothLanding();
 					} catch (IOException e) {
@@ -122,10 +125,11 @@ public class MainWindow extends Window {
 					System.exit(0);
 				case "help":
 					MessageBox.showMessageBox(getOwner(),"Help Menu", "ls : List Current Directory\nquit : Shutdown Hobble\nhelp : We cannot provide the type you need.");
-
+					history.add(history.size(), "Help Request" + hlp.getDate() + " @ " + hlp.getTime()+ "\n");
 					break;
 				default : 
 					MessageBox.showMessageBox(getOwner(),"Error", "Unkown Command\nYour computer has a virus.\nLike for sure.");
+					history.add(history.size(), "Help Request FAIL" + hlp.getDate() + " @ " + hlp.getTime()+ "\n");
 					break;
 
 				}
@@ -138,8 +142,17 @@ public class MainWindow extends Window {
 	
 	//write history to file
 	protected void smoothLanding() throws IOException {
-		// TODO Auto-generated method stub
-		FileWriter write = new FileWriter("Histo.ry");
+		// TODO Auto-generated method st
+		String seperator = "\n Command History Since Last System ShutDown @ " + hlp.getTime() + " " + hlp.getDate() + " \n\n";
+		File file = new File("Histo.ry");
+		//create maybe
+		if  (!file.exists()){
+			file.createNewFile();
+		}
+		
+		FileWriter write = new FileWriter(file.getName(),true);
+		BufferedWriter bufferedWriter = new BufferedWriter(write);
+		write.write(seperator);
 		for(String str: history) {
 			write.write(str);
 		}
